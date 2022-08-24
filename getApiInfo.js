@@ -5,14 +5,32 @@ var fs = require('fs');
 
 
  
-fs.readFile('englishTest.txt', function (err, data) {
+fs.readFile('english.txt', function (err, data) {
     if (err) throw err;
     let array = data.toString().split("\n");
-    Promise.all(array.map(url =>
-        fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${array[i]}`).then(resp => resp.text())
-    )).then(texts => {
-        console.log("Text", texts);
-    })
+    Promise.all(array.map(async (word) =>
+   {
+
+    const database = require('./db');
+    const Produto = require('./produto');
+    let i  = 0;
+    console.log(`${i}/${array.length} - ${array[i]}`) 
+    i++; 
+    try {
+      
+ 
+        // const resultadoCreate = await Produto.create({
+        //     nome: 'mouse',
+        //     preco: 10,
+        //     descricao: 'Um mouse USB bonitão'
+        // })
+        // console.log(resultadoCreate);
+    } catch (error) {
+        console.log(error);
+    }
+
+
+   }))
 });
 
 // function test(msg, callback) {
