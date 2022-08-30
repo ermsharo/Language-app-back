@@ -3,19 +3,19 @@ const path = require('path')
 const express = require('express')
 const router = express.Router()
 
-router.get('/auth', (req, res) => {
+router.get('/entries', (req, res) => {
 	res.send("user working")
 })
 
-router.post('/auth', (req, res) => {
+router.post('/entries', (req, res) => {
 	res.send("user working")
 })
 
-router.put('/auth', (req, res) => {
+router.put('/entries', (req, res) => {
 	res.send("user working")
 })
 
-router.delete('/auth', (req, res) => {
+router.delete('/entries', (req, res) => {
 	res.send("user working")
 })
 

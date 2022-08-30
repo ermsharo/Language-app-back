@@ -19,12 +19,6 @@ fs.readFile('english.txt', function (err, data) {
     try {
       
  
-        // const resultadoCreate = await Produto.create({
-        //     nome: 'mouse',
-        //     preco: 10,
-        //     descricao: 'Um mouse USB bonitão'
-        // })
-        // console.log(resultadoCreate);
     } catch (error) {
         console.log(error);
     }

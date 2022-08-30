@@ -1,9 +1,10 @@
 const express = require('express')
-const dotenv = require('dotenv');const authRoutes = require('./routes/auth')
-const wordsRoutes = require('./routes/words')
-const favoritesRoutes = require('./routes/favorites')
-const historyRoutes = require('./routes/history')
+const dotenv = require('dotenv'); const authRoutes = require('./routes/auth')
+const authRoutes = require('./routes/auth')
+const entriesRoutes = require('./routes/entries')
+const userRoutes = require('./routes/user')
 const db = require('./database/connection')
+const bodyParser = require('body-parser')
 dotenv.config();
 
 const app = express()
@@ -19,20 +20,20 @@ app.get('/', (req, res) => {
 //Database connection
 
 db
-  .authenticate()
-  .then(() => {
-    console.log("Database connected");
-  })
-  .catch(err => {
-    console.log("DB connection error :", err)
-  })
+    .authenticate()
+    .then(() => {
+        console.log("Database connected");
+    })
+    .catch(err => {
+        console.log("DB connection error :", err)
+    })
 
 
 //Routes
 app.use(authRoutes);
-app.use(wordsRoutes);
-app.use(favoritesRoutes);
-app.use(historyRoutes);
+app.use(entriesRoutes);
+app.use(userRoutes);
+
 
 app.listen(port, () => {
 

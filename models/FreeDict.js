@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const database = require('./../db');
 
-const freeDictWords = database.define('free_dict_words', {
+const freeDictWords = database.define('FREE_DICT_WORDS', {
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -12,4 +12,5 @@ const freeDictWords = database.define('free_dict_words', {
         type: Sequelize.STRING,
         allowNull: false
     },
+
 })
