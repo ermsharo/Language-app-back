@@ -1,6 +1,9 @@
 const express = require('express')
-const dotenv = require('dotenv');
-
+const dotenv = require('dotenv');const authRoutes = require('./routes/auth')
+const wordsRoutes = require('./routes/words')
+const favoritesRoutes = require('./routes/favorites')
+const historyRoutes = require('./routes/history')
+const db = require('./database/connection')
 dotenv.config();
 
 const app = express()
@@ -13,10 +16,28 @@ app.get('/', (req, res) => {
     )
 })
 
-const authRoutes = require('./routes/auth')
+//Database connection
 
+db
+  .authenticate()
+  .then(() => {
+    console.log("Database connected");
+  })
+  .catch(err => {
+    console.log("DB connection error :", err)
+  })
+
+
+//Routes
 app.use(authRoutes);
+app.use(wordsRoutes);
+app.use(favoritesRoutes);
+app.use(historyRoutes);
+
 app.listen(port, () => {
+
+
+
     console.log(`Example app listening on port ${port}`)
 })
 
