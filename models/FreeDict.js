@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const database = require('./../db');
+const database = require('../database/connection');
 
 const freeDictWords = database.define('FREE_DICT_WORDS', {
     id: {
@@ -14,3 +14,5 @@ const freeDictWords = database.define('FREE_DICT_WORDS', {
     },
 
 })
+
+module.exports = freeDictWords;

@@ -1,15 +1,16 @@
 const express = require('express')
-const dotenv = require('dotenv'); const authRoutes = require('./routes/auth')
+const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth')
 const entriesRoutes = require('./routes/entries')
 const userRoutes = require('./routes/user')
 const db = require('./database/connection')
-const bodyParser = require('body-parser')
+var cors = require('cors')
 dotenv.config();
+
 
 const app = express()
 const port = process.env.PORT;
-
+app.use(cors())
 app.get('/', (req, res) => {
     res.send({
         "message": "Fullstack Challenge 🏅 - Dictionary"
