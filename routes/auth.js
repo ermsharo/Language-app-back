@@ -1,26 +1,36 @@
-const path = require('path')
+const express = require("express");
+const dotenv = require("dotenv");
+const authRoutes = require("./routes/auth");
+const entriesRoutes = require("./routes/entries");
+const userRoutes = require("./routes/user");
+const db = require("./database/connection");
+var cors = require("cors");
+dotenv.config();
 
-const express = require('express')
-const router = express.Router()
+const app = express();
+const port = process.env.PORT;
+app.use(cors());
+app.get("/", (req, res) => {
+  res.send({
+    message: "Fullstack Challenge 🏅 - Dictionary",
+  });
+});
 
-router.get('/auth', (req, res) => {
-	res.send("user working")
-})
+//Database connection
 
-router.post('/auth', (req, res) => {
-	res.send("user working")
-})
+db.authenticate()
+  .then(() => {
+    console.log("Database connected");
+  })
+  .catch((err) => {
+    console.log("DB connection error :", err);
+  });
 
-router.put('/auth', (req, res) => {
-	res.send("user working")
-})
+//Routes
+app.use(authRoutes);
+app.use(entriesRoutes);
+app.use(userRoutes);
 
-router.delete('/auth', (req, res) => {
-	res.send("user working")
-})
-
-
-
-
-
-module.exports = router
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});
