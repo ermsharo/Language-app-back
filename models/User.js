@@ -1,27 +1,26 @@
-const Sequelize = require('sequelize');
-const database = require('../database/connection');
+const Sequelize = require("sequelize");
+const database = require("../database/connection");
 
-const userInfo = database.define('user_info', {
-    id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
-        allowNull: false,
-        primaryKey: true
-    },
-    user_id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
-        allowNull: false,
-    },
-    word_id: {
-        type: Sequelize.INTEGER,
-        autoIncrement: true,
-        allowNull: false,
-    },
-    created_time: {
-        type: Sequelize.DATE,
-    },
-    update_time: {
-        type: Sequelize.DATE,
-    }
-})
+const userInfo = database.define("USER_INFO", {
+  id: {
+    type: Sequelize.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true,
+  },
+  userName: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  email: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+  password: {
+    type: Sequelize.STRING,
+    allowNull: false,
+  },
+});
+
+module.exports = userInfo;
