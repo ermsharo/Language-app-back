@@ -1,7 +1,7 @@
-const Sequelize = require('sequelize');
-const database = require('./db');
+const Sequelize = require("sequelize");
+const database = require("../database/connection");
 
-const historyLog = database.define('history_log', {
+const historyLog = database.define('HISTORY_LOGS', {
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -10,18 +10,17 @@ const historyLog = database.define('history_log', {
     },
     user_id: {
         type: Sequelize.INTEGER,
-        autoIncrement: true,
         allowNull: false,
     },
     word_id: {
         type: Sequelize.INTEGER,
-        autoIncrement: true,
         allowNull: false,
     },
-    created_time: {
-        type:Sequelize.DATE,
+    word: {
+        type: Sequelize.TEXT,
+        allowNull: false,
     },
-    update_time: {
-        type:Sequelize.DATE,
-    }
+
 })
+
+module.exports = historyLog;

@@ -1,7 +1,7 @@
-const Sequelize = require('sequelize');
-const database = require('./../db');
+const Sequelize = require("sequelize");
+const database = require("../database/connection");
 
-const favoritesLog = database.define('favorites_log', {
+const favoritesLog = database.define('FAVORITES_LOGS', {
     id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
@@ -10,18 +10,13 @@ const favoritesLog = database.define('favorites_log', {
     },
     user_id: {
         type: Sequelize.INTEGER,
-        autoIncrement: true,
         allowNull: false,
     },
     word_id: {
         type: Sequelize.INTEGER,
-        autoIncrement: true,
         allowNull: false,
     },
-    created_time: {
-        type:Sequelize.DATE,
-    },
-    update_time: {
-        type:Sequelize.DATE,
-    }
+
 })
+
+module.exports = favoritesLog;
