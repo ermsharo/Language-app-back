@@ -76,7 +76,7 @@ router.post("/auth/singin", async (req, res) => {
 	) {
 		let userId = userByMail.id;
 		const token = jwt.sign({ userId }, process.env.SECRET, {
-			expiresIn: 300,
+			expiresIn: 3600,
 		});
 
 		return res.status(200).json({

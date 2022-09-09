@@ -6,19 +6,19 @@ const FavoritesLog = require("../models/FavoritesLog");
 const router = express.Router();
 
 router.get("/user/me", async (req, res) => {
-    let genericUser = "emilio"
-    const getUserByUsername = await User.findOne({ where: { username: genericUser } });
-    if (getUserByUsername !== null) {
-        const userByUsername = getUserByUsername.dataValues;
-        console.log("-->", userByUsername)
-        return res.status(200).json({
-            id: userByUsername.id,
-            username: userByUsername.userName,
-            email: userByUsername.email
-        });
-    }
+  let genericUser = "emilio"
+  const getUserByUsername = await User.findOne({ where: { username: genericUser } });
+  if (getUserByUsername !== null) {
+    const userByUsername = getUserByUsername.dataValues;
+    console.log("-->", userByUsername)
+    return res.status(200).json({
+      id: userByUsername.id,
+      username: userByUsername.userName,
+      email: userByUsername.email
+    });
+  }
 
-    res.status(401).send("user not find");
+  res.status(401).send("user not find");
 });
 
 const getNumberOfPages = (count, pageSize) => {
@@ -29,35 +29,35 @@ const getNumberOfPages = (count, pageSize) => {
 
 
 router.get("/user/me/history", async (req, res) => {
-    let genericUserId = 1;
-    let page = 0;
-    let pageSize = 20;
+  let genericUserId = 1;
+  let pageSize = 20;
+  let { page } = req.query;
 
-    const { count, rows } = await HistoryLog.findAndCountAll({
-        where: {
-          user_id: genericUserId
-        },
-        offset: page * pageSize,
-        limit: pageSize,
-      });
-    
-      res.send({
-        results: rows.map((item) => {
-          return item.word;
-        }),
-        totalDocs: count,
-        page: page,
-        totalPages: getNumberOfPages(count, pageSize),
-        hasNext: page == getNumberOfPages(count, pageSize) ? false : true,
-        hasPrev: page == 0 ? false : true,
-      });
+  const { count, rows } = await HistoryLog.findAndCountAll({
+    where: {
+      user_id: genericUserId
+    },
+    offset: page * pageSize,
+    limit: pageSize,
+  });
+
+  res.send({
+    results: rows.map((item) => {
+      return item.word;
+    }),
+    totalDocs: count,
+    page: page,
+    totalPages: getNumberOfPages(count, pageSize),
+    hasNext: page == getNumberOfPages(count, pageSize) ? false : true,
+    hasPrev: page == 0 ? false : true,
+  });
 });
 
 
 
 router.get("/user/me/favorites", (req, res) => {
-    console.log("singup req", req.body);
-    res.send("user working");
+  console.log("singup req", req.body);
+  res.send("user working");
 });
 
 
