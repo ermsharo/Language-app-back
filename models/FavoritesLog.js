@@ -16,6 +16,10 @@ const favoritesLog = database.define('FAVORITES_LOGS', {
         type: Sequelize.INTEGER,
         allowNull: false,
     },
+    word: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+    },
 
 })
 

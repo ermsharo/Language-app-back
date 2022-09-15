@@ -55,9 +55,21 @@ router.get("/user/me/history", async (req, res) => {
 
 
 
-router.get("/user/me/favorites", (req, res) => {
+router.get("/user/me/favorites", async (req, res) => {
   console.log("singup req", req.body);
-  res.send("user working");
+  let genericUserId = 1;
+
+  const { count, rows } = await HistoryLog.findAndCountAll({
+    where: {
+      user_id: genericUserId
+    },
+  });
+
+
+
+  return res.status(200).json({
+    rows: rows,
+  });
 });
 
 
