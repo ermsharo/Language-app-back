@@ -39,9 +39,9 @@ router.get("/entries/en/", verifyJWT, async (req, res) => {
 
   //All query cenarios
   //Without req query
-  console.log("page here ", req.body.page);
+  //console.log("page here ", req.body.page);
   let { search, limit, page } = req.query;
-  console.log("params: \nsearch : ", search, " \nlimit : ", limit, "\n page: ", page);
+  //console.log("params: \nsearch : ", search, " \nlimit : ", limit, "\n page: ", page);
 
   //Paginate all results and return
 
@@ -80,7 +80,7 @@ const addWordToHistory = async (wordId, word, userId) => {
   });
 
   if (created) {
-    console.log("Insert word -> ", row);
+   // console.log("Insert word -> ", row);
     return {
       status: 200,
       message: "successful add in history",

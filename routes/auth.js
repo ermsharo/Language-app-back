@@ -9,10 +9,10 @@ require("dotenv-safe").config();
 const jwt = require("jsonwebtoken");
 
 router.post("/auth/singup", async (req, res) => {
-	console.log("singup req", req.body.formInputs);
+
 
 	const { user, email, password, passwordCheck } = req.body.formInputs;
-	console.log("->", user, email, password, passwordCheck);
+
 
 	if (!(email && password && user && passwordCheck)) {
 		return res.status(400).send("Form data is missing");
@@ -50,26 +50,26 @@ router.post("/auth/singup", async (req, res) => {
 
 
 router.post("/auth/singin", async (req, res) => {
-	console.log("singin req", req.body);
+
 	const { email, password } = req.body.formInputs;
-	console.log("->", email, password);
+	//console.log("->", email, password);
 	let atalho = "emilio@mail.com";
 	let atalhoSenha = "abc123";
 	const getUserByMail = await User.findOne({ where: { email: atalho } });
 
 
 	const userByMail = getUserByMail.dataValues;
-	console.log("---> user obj", userByMail);
+	//console.log("---> user obj", userByMail);
 	let isPasswordValid = bcrypt.compareSync(
 		atalhoSenha,
 		userByMail.password
 	);
 
-	console.log("user id", userByMail.id);
-	console.log("user email", userByMail.email);
-	console.log("user password", userByMail.password);
+	//console.log("user id", userByMail.id);
+	//console.log("user email", userByMail.email);
+	//console.log("user password", userByMail.password);
 
-	console.log("=>", userByMail.email, email);
+	//console.log("=>", userByMail.email, email);
 	if (
 		userByMail.email == email &&
 		bcrypt.compareSync(password, userByMail.password)
