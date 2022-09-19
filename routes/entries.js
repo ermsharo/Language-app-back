@@ -138,7 +138,7 @@ const removeWordToFavorites = async (wordId) => {
 
   let remove = await favoritesLog.destroy({
     where: {
-      wordId: wordId
+      word_id: wordId
     }
   });
 
@@ -202,13 +202,13 @@ router.delete("/entries/en/:word/unfavorite", async (req, res) => {
 
   let testeWordId = 1;
 
-  const insertionWordInFavorites = await removeWordToFavorites(
+  const removeWordInFavorites = await removeWordToFavorites(
     testeWordId,
   );
 
 
-  return res.status(insertionWordInFavorites.status).json({
-    awnser: insertionWordInFavorites.message,
+  return res.status(removeWordInFavorites.status).json({
+    awnser: removeWordInFavorites.message,
   });
 });
 
