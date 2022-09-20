@@ -22,7 +22,6 @@ function verifyJWT(req, res, next) {
   });
 }
 
-
 router.get("/user/me", verifyJWT, async (req, res) => {
   let genericUser = "emilio";
   const getUserByUsername = await User.findOne({
@@ -46,10 +45,7 @@ const getNumberOfPages = (count, pageSize) => {
   return 0;
 };
 
-const getUserByBody = () => {
-
-}
-
+const getUserByBody = () => {};
 
 const getFavoritesByUserId = async (userId) => {
   const { rows } = await FavoritesLog.findAndCountAll({
@@ -69,7 +65,7 @@ const verifyIsFavorited = (favoritedWords, word) => {
   return favoritedWords.includes(word);
 };
 
-router.get("/user/me/history",verifyJWT, async (req, res) => {
+router.get("/user/me/history", verifyJWT, async (req, res) => {
   let genericUserId = 1;
   let pageSize = 20;
   let { page } = req.query;

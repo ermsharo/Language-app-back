@@ -59,7 +59,6 @@ router.get("/entries/en/", verifyJWT, async (req, res) => {
   let { search, page } = req.query;
   //Paginate all results and return
 
-
   const { count, rows } = await freeDict.findAndCountAll({
     where: {
       word: {
@@ -151,8 +150,8 @@ const removeWordToFavorites = async (wordId, word) => {
 
   let remove = await favoritesLog.destroy({
     where: {
-      word: word
-    }
+      word: word,
+    },
   });
   return {
     status: 200,

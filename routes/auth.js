@@ -24,7 +24,6 @@ router.post("/auth/singup", async (req, res) => {
     if (getEmailByEmailtext === null) {
       encryptedPassword = await bcrypt.hash(password, 10);
 
-
       //console.log("User created", userCreated);
       return res.status(200).send("User susseful created");
     } else {
@@ -35,7 +34,6 @@ router.post("/auth/singup", async (req, res) => {
   } else {
     return res.status(400).send("Alredy exist a acoount with this username");
   }
-
 });
 
 router.post("/auth/singin", async (req, res) => {

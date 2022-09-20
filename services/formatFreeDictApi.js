@@ -3,7 +3,6 @@ const filterObjectByKey = (obj) => {
     Object.entries(obj).filter(([key, value]) => key === "word")
   );
 
-
   return filteredByKey;
 };
 
