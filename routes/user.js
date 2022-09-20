@@ -6,15 +6,16 @@ const FavoritesLog = require("../models/FavoritesLog");
 const router = express.Router();
 
 router.get("/user/me", async (req, res) => {
-  let genericUser = "emilio"
-  const getUserByUsername = await User.findOne({ where: { username: genericUser } });
+  let genericUser = "emilio";
+  const getUserByUsername = await User.findOne({
+    where: { username: genericUser },
+  });
   if (getUserByUsername !== null) {
     const userByUsername = getUserByUsername.dataValues;
-    console.log("-->", userByUsername)
     return res.status(200).json({
       id: userByUsername.id,
       username: userByUsername.userName,
-      email: userByUsername.email
+      email: userByUsername.email,
     });
   }
 
@@ -27,7 +28,6 @@ const getNumberOfPages = (count, pageSize) => {
   return 0;
 };
 
-
 router.get("/user/me/history", async (req, res) => {
   let genericUserId = 1;
   let pageSize = 20;
@@ -35,13 +35,13 @@ router.get("/user/me/history", async (req, res) => {
 
   const { count, rows } = await HistoryLog.findAndCountAll({
     where: {
-      user_id: genericUserId
+      user_id: genericUserId,
     },
     offset: page * pageSize,
     limit: pageSize,
   });
 
-  res.send({
+  return res.send({
     results: rows.map((item) => {
       return item.word;
     }),
@@ -53,25 +53,31 @@ router.get("/user/me/history", async (req, res) => {
   });
 });
 
-
-
 router.get("/user/me/favorites", async (req, res) => {
   console.log("singup req", req.body);
   let genericUserId = 1;
+  let pageSize = 20;
 
-  const { count, rows } = await HistoryLog.findAndCountAll({
+  let { page } = req.query;
+
+  const { count, rows } = await FavoritesLog.findAndCountAll({
     where: {
-      user_id: genericUserId
+      user_id: genericUserId,
     },
+    offset: page * pageSize,
+    limit: pageSize,
   });
 
-
-
-  return res.status(200).json({
-    rows: rows,
+  return res.send({
+    results: rows.map((item) => {
+      return { word: item.word, isFavorite: true };
+    }),
+    totalDocs: count,
+    page: page,
+    totalPages: getNumberOfPages(count, pageSize),
+    hasNext: page == getNumberOfPages(count, pageSize) ? false : true,
+    hasPrev: page == 0 ? false : true,
   });
 });
-
-
 
 module.exports = router;

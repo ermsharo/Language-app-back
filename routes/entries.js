@@ -20,7 +20,6 @@ function verifyJWT(req, res, next) {
         .status(500)
         .json({ auth: false, message: "Failed to authenticate token." });
 
-    // se tudo estiver ok, salva no request para uso posterior
     req.userId = decoded.id;
     next();
   });
@@ -32,18 +31,36 @@ const getNumberOfPages = (count, pageSize) => {
   return 0;
 };
 
-router.get("/entries/en/", verifyJWT, async (req, res) => {
+const getFavoritesByUserId = async (userId) => {
+  const { rows } = await favoritesLog.findAndCountAll({
+    where: {
+      user_id: userId,
+    },
+  });
 
-  let pageSize = 50;
+  // filter just the words
+  let favoritedWords = rows.map(function (value) {
+    return value.word;
+  });
+
+  return favoritedWords;
+};
+
+const verifyIsFavorited = (favoritedWords, word) => {
+  console.log(" \n \n favouriteWords", favoritedWords, " \n word", word);
+  return favoritedWords.includes(word);
+};
+
+router.get("/entries/en/", verifyJWT, async (req, res) => {
+  let pageSize = 20;
   //const page = req.body["page"];
 
   //All query cenarios
   //Without req query
-  //console.log("page here ", req.body.page);
   let { search, limit, page } = req.query;
-  //console.log("params: \nsearch : ", search, " \nlimit : ", limit, "\n page: ", page);
-
   //Paginate all results and return
+
+  let genericUse = 1;
 
   const { count, rows } = await freeDict.findAndCountAll({
     where: {
@@ -55,9 +72,14 @@ router.get("/entries/en/", verifyJWT, async (req, res) => {
     limit: pageSize,
   });
 
+  let favoritedWords = await getFavoritesByUserId(1);
+
   res.send({
     results: rows.map((item) => {
-      return item.word;
+      return {
+        word: item.word,
+        isFavorite: verifyIsFavorited(favoritedWords, item.word),
+      };
     }),
     totalDocs: count,
     page: page,
@@ -66,7 +88,6 @@ router.get("/entries/en/", verifyJWT, async (req, res) => {
     hasPrev: page == 0 ? false : true,
   });
 });
-
 
 const addWordToHistory = async (wordId, word, userId) => {
   //Inserting this word in historic
@@ -80,7 +101,7 @@ const addWordToHistory = async (wordId, word, userId) => {
   });
 
   if (created) {
-   // console.log("Insert word -> ", row);
+    // console.log("Insert word -> ", row);
     return {
       status: 200,
       message: "successful add in history",
@@ -110,16 +131,12 @@ router.get("/entries/en/:word", async (req, res) => {
   axios
     .get(freeDictWordUrl)
     .then(async function (response) {
-      // handle success
-      //console.log("success", response.data)
-
       const insertionWordInHistory = await addWordToHistory(
         testeWordId,
         word,
         testeUserId
       );
 
-      // console.log("Insert here -> -> ->", insertionWordInHistory);
       return res.status(insertionWordInHistory.status).json({
         awnser: insertionWordInHistory.message,
         freeDict: response.data,
@@ -132,23 +149,21 @@ router.get("/entries/en/:word", async (req, res) => {
     });
 });
 
-
-const removeWordToFavorites = async (wordId) => {
+const removeWordToFavorites = async (wordId, word) => {
   //Remove word from favorites
 
   let remove = await favoritesLog.destroy({
     where: {
-      word_id: wordId
-    }
+      word_id: wordId,
+      word: word,
+    },
   });
-
 
   return {
     status: 200,
     message: "word removed from favorites",
   };
 };
-
 
 const addWordToFavorites = async (wordId, word, userId) => {
   //Inserting this word in historic
@@ -175,13 +190,10 @@ const addWordToFavorites = async (wordId, word, userId) => {
   };
 };
 
-
 router.post("/entries/en/:word/favorite", async (req, res) => {
-
   const word = req.params.word;
   let testeUserId = 1;
   let testeWordId = 1;
-
 
   const insertionWordInFavorites = await addWordToFavorites(
     testeWordId,
@@ -189,23 +201,16 @@ router.post("/entries/en/:word/favorite", async (req, res) => {
     testeUserId
   );
 
-
   return res.status(insertionWordInFavorites.status).json({
     awnser: insertionWordInFavorites.message,
   });
-
-
 });
 
-
 router.delete("/entries/en/:word/unfavorite", async (req, res) => {
-
+  const word = req.params.word;
   let testeWordId = 1;
 
-  const removeWordInFavorites = await removeWordToFavorites(
-    testeWordId,
-  );
-
+  const removeWordInFavorites = await removeWordToFavorites(testeWordId, word);
 
   return res.status(removeWordInFavorites.status).json({
     awnser: removeWordInFavorites.message,
