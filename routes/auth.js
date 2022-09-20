@@ -1,4 +1,3 @@
-const path = require("path");
 const { Op } = require("sequelize");
 const express = require("express");
 const User = require("../models/User");
@@ -25,11 +24,6 @@ router.post("/auth/singup", async (req, res) => {
     if (getEmailByEmailtext === null) {
       encryptedPassword = await bcrypt.hash(password, 10);
 
-      const userCreated = await User.create({
-        userName: user,
-        email: email.toLowerCase(),
-        password: encryptedPassword,
-      });
 
       //console.log("User created", userCreated);
       return res.status(200).send("User susseful created");
@@ -42,17 +36,13 @@ router.post("/auth/singup", async (req, res) => {
     return res.status(400).send("Alredy exist a acoount with this username");
   }
 
-  return res.send("singup working");
 });
 
 router.post("/auth/singin", async (req, res) => {
   const { email, password } = req.body.formInputs;
-  let atalho = "emilio@mail.com";
-  let atalhoSenha = "abc123";
-  const getUserByMail = await User.findOne({ where: { email: atalho } });
+  const getUserByMail = await User.findOne({ where: { email: email } });
 
   const userByMail = getUserByMail.dataValues;
-  let isPasswordValid = bcrypt.compareSync(atalhoSenha, userByMail.password);
   if (
     userByMail.email == email &&
     bcrypt.compareSync(password, userByMail.password)

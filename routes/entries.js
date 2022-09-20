@@ -47,7 +47,6 @@ const getFavoritesByUserId = async (userId) => {
 };
 
 const verifyIsFavorited = (favoritedWords, word) => {
-  console.log(" \n \n favouriteWords", favoritedWords, " \n word", word);
   return favoritedWords.includes(word);
 };
 
@@ -57,10 +56,9 @@ router.get("/entries/en/", verifyJWT, async (req, res) => {
 
   //All query cenarios
   //Without req query
-  let { search, limit, page } = req.query;
+  let { search, page } = req.query;
   //Paginate all results and return
 
-  let genericUse = 1;
 
   const { count, rows } = await freeDict.findAndCountAll({
     where: {
@@ -114,7 +112,7 @@ const addWordToHistory = async (wordId, word, userId) => {
   };
 };
 
-router.get("/entries/en/:word", async (req, res) => {
+router.get("/entries/en/:word", verifyJWT, async (req, res) => {
   //The user id need to be presents en request body
   //The word id from the list of words also need to stay in body
 
@@ -122,7 +120,6 @@ router.get("/entries/en/:word", async (req, res) => {
   const word = req.params.word;
   let testeUserId = 1;
   let testeWordId = 1;
-  //console.log("body ->", req.body);
   const freeDictWordUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${word.replace(
     /\s/g,
     "+"
@@ -154,11 +151,9 @@ const removeWordToFavorites = async (wordId, word) => {
 
   let remove = await favoritesLog.destroy({
     where: {
-      word_id: wordId,
-      word: word,
-    },
+      word: word
+    }
   });
-
   return {
     status: 200,
     message: "word removed from favorites",
@@ -190,7 +185,7 @@ const addWordToFavorites = async (wordId, word, userId) => {
   };
 };
 
-router.post("/entries/en/:word/favorite", async (req, res) => {
+router.post("/entries/en/:word/favorite", verifyJWT, async (req, res) => {
   const word = req.params.word;
   let testeUserId = 1;
   let testeWordId = 1;
@@ -206,7 +201,7 @@ router.post("/entries/en/:word/favorite", async (req, res) => {
   });
 });
 
-router.delete("/entries/en/:word/unfavorite", async (req, res) => {
+router.delete("/entries/en/:word/unfavorite", verifyJWT, async (req, res) => {
   const word = req.params.word;
   let testeWordId = 1;
 

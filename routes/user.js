@@ -4,8 +4,26 @@ const User = require("../models/User");
 const HistoryLog = require("../models/HistoryLog");
 const FavoritesLog = require("../models/FavoritesLog");
 const router = express.Router();
+const jwt = require("jsonwebtoken");
 
-router.get("/user/me", async (req, res) => {
+function verifyJWT(req, res, next) {
+  const token = req.headers["x-access-token"];
+  if (!token)
+    return res.status(401).json({ auth: false, message: "No token provided." });
+
+  jwt.verify(token, process.env.SECRET, function (err, decoded) {
+    if (err)
+      return res
+        .status(500)
+        .json({ auth: false, message: "Failed to authenticate token." });
+
+    req.userId = decoded.id;
+    next();
+  });
+}
+
+
+router.get("/user/me", verifyJWT, async (req, res) => {
   let genericUser = "emilio";
   const getUserByUsername = await User.findOne({
     where: { username: genericUser },
@@ -48,11 +66,10 @@ const getFavoritesByUserId = async (userId) => {
   return favoritedWords;
 };
 const verifyIsFavorited = (favoritedWords, word) => {
-  console.log(" \n \n favouriteWords", favoritedWords, " \n word", word);
   return favoritedWords.includes(word);
 };
 
-router.get("/user/me/history", async (req, res) => {
+router.get("/user/me/history",verifyJWT, async (req, res) => {
   let genericUserId = 1;
   let pageSize = 20;
   let { page } = req.query;
@@ -82,7 +99,7 @@ router.get("/user/me/history", async (req, res) => {
   });
 });
 
-router.get("/user/me/favorites", async (req, res) => {
+router.get("/user/me/favorites", verifyJWT, async (req, res) => {
   console.log("singup req", req.body);
   let genericUserId = 1;
   let pageSize = 20;
