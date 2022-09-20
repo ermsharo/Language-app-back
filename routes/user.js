@@ -28,6 +28,30 @@ const getNumberOfPages = (count, pageSize) => {
   return 0;
 };
 
+const getUserByBody = () => {
+
+}
+
+
+const getFavoritesByUserId = async (userId) => {
+  const { rows } = await FavoritesLog.findAndCountAll({
+    where: {
+      user_id: userId,
+    },
+  });
+
+  // filter just the words
+  let favoritedWords = rows.map(function (value) {
+    return value.word;
+  });
+
+  return favoritedWords;
+};
+const verifyIsFavorited = (favoritedWords, word) => {
+  console.log(" \n \n favouriteWords", favoritedWords, " \n word", word);
+  return favoritedWords.includes(word);
+};
+
 router.get("/user/me/history", async (req, res) => {
   let genericUserId = 1;
   let pageSize = 20;
@@ -41,9 +65,14 @@ router.get("/user/me/history", async (req, res) => {
     limit: pageSize,
   });
 
+  let favoritedWords = await getFavoritesByUserId(1);
+
   return res.send({
     results: rows.map((item) => {
-      return item.word;
+      return {
+        word: item.word,
+        isFavorite: verifyIsFavorited(favoritedWords, item.word),
+      };
     }),
     totalDocs: count,
     page: page,
