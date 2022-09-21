@@ -23,8 +23,13 @@ router.post("/auth/singup", async (req, res) => {
     const getEmailByEmailtext = await User.findOne({ where: { email: email } });
     if (getEmailByEmailtext === null) {
       encryptedPassword = await bcrypt.hash(password, 10);
+      const userCreated = await User.create({
+				userName: user,
+				email: email.toLowerCase(),
+				password: encryptedPassword,
+			});
 
-      //console.log("User created", userCreated);
+      console.log("User created", userCreated);
       return res.status(200).send("User susseful created");
     } else {
       return res

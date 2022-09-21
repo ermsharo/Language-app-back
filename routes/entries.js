@@ -20,7 +20,7 @@ function verifyJWT(req, res, next) {
         .status(500)
         .json({ auth: false, message: "Failed to authenticate token." });
 
-    req.userId = decoded.id;
+    req.userId = decoded.userId;
     next();
   });
 }
@@ -68,6 +68,7 @@ router.get("/entries/en/", verifyJWT, async (req, res) => {
     offset: page * pageSize,
     limit: pageSize,
   });
+
 
   let favoritedWords = await getFavoritesByUserId(1);
 
@@ -117,20 +118,35 @@ router.get("/entries/en/:word", verifyJWT, async (req, res) => {
 
   //We will need to get re response of FREE Dictionary api for this word
   const word = req.params.word;
-  let testeUserId = 1;
-  let testeWordId = 1;
   const freeDictWordUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${word.replace(
     /\s/g,
     "+"
   )}`;
 
+
+
+  const getWordIdByWordName = await freeDict.findOne({ where: { word: req.params.word } });
+  if (getWordIdByWordName === null) {
+
+    return res.status(400).send("cant find this word in database");
+
+  }
+
+
+  console.log(" \n \n \n word by name->", getWordIdByWordName);
+  console.log("User id", req.userId);
+
+  const wordId = getWordIdByWordName.dataValues.id;
   axios
     .get(freeDictWordUrl)
     .then(async function (response) {
+      console.log("Response here", response);
+
+
       const insertionWordInHistory = await addWordToHistory(
-        testeWordId,
+        wordId,
         word,
-        testeUserId
+        req.userId
       );
 
       return res.status(insertionWordInHistory.status).json({
@@ -145,12 +161,13 @@ router.get("/entries/en/:word", verifyJWT, async (req, res) => {
     });
 });
 
-const removeWordToFavorites = async (wordId, word) => {
+const removeWordToFavorites = async (user_id, word) => {
   //Remove word from favorites
 
   let remove = await favoritesLog.destroy({
     where: {
       word: word,
+      user_id: user_id,
     },
   });
   return {
@@ -186,13 +203,21 @@ const addWordToFavorites = async (wordId, word, userId) => {
 
 router.post("/entries/en/:word/favorite", verifyJWT, async (req, res) => {
   const word = req.params.word;
-  let testeUserId = 1;
-  let testeWordId = 1;
+
+
+  const getWordIdByWordName = await freeDict.findOne({ where: { word: req.params.word } });
+  if (getWordIdByWordName === null) {
+
+    return res.status(400).send("cant find this word in database");
+
+  }
+  const wordId = getWordIdByWordName.dataValues.id;
+
 
   const insertionWordInFavorites = await addWordToFavorites(
-    testeWordId,
+    wordId,
     word,
-    testeUserId
+    req.userId
   );
 
   return res.status(insertionWordInFavorites.status).json({
@@ -202,9 +227,9 @@ router.post("/entries/en/:word/favorite", verifyJWT, async (req, res) => {
 
 router.delete("/entries/en/:word/unfavorite", verifyJWT, async (req, res) => {
   const word = req.params.word;
-  let testeWordId = 1;
 
-  const removeWordInFavorites = await removeWordToFavorites(testeWordId, word);
+
+  const removeWordInFavorites = await removeWordToFavorites(req.userId, word);
 
   return res.status(removeWordInFavorites.status).json({
     awnser: removeWordInFavorites.message,

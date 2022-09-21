@@ -17,15 +17,16 @@ function verifyJWT(req, res, next) {
         .status(500)
         .json({ auth: false, message: "Failed to authenticate token." });
 
-    req.userId = decoded.id;
+    req.userId = decoded.userId;
     next();
   });
 }
 
 router.get("/user/me", verifyJWT, async (req, res) => {
   let genericUser = "emilio";
-  const getUserByUsername = await User.findOne({
-    where: { username: genericUser },
+
+  const getUserById = await User.findOne({
+    where: { id: req.userId },
   });
   if (getUserByUsername !== null) {
     const userByUsername = getUserByUsername.dataValues;
@@ -44,8 +45,6 @@ const getNumberOfPages = (count, pageSize) => {
   if (count % pageSize != 0) return parseInt(count / pageSize);
   return 0;
 };
-
-const getUserByBody = () => {};
 
 const getFavoritesByUserId = async (userId) => {
   const { rows } = await FavoritesLog.findAndCountAll({
@@ -66,13 +65,12 @@ const verifyIsFavorited = (favoritedWords, word) => {
 };
 
 router.get("/user/me/history", verifyJWT, async (req, res) => {
-  let genericUserId = 1;
   let pageSize = 20;
   let { page } = req.query;
 
   const { count, rows } = await HistoryLog.findAndCountAll({
     where: {
-      user_id: genericUserId,
+      user_id: req.userId,
     },
     offset: page * pageSize,
     limit: pageSize,
@@ -97,14 +95,14 @@ router.get("/user/me/history", verifyJWT, async (req, res) => {
 
 router.get("/user/me/favorites", verifyJWT, async (req, res) => {
   console.log("singup req", req.body);
-  let genericUserId = 1;
+
   let pageSize = 20;
 
   let { page } = req.query;
 
   const { count, rows } = await FavoritesLog.findAndCountAll({
     where: {
-      user_id: genericUserId,
+      user_id: req.userId,
     },
     offset: page * pageSize,
     limit: pageSize,
