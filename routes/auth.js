@@ -29,7 +29,7 @@ router.post("/auth/singup", async (req, res) => {
         password: encryptedPassword,
       });
 
-      console.log("User created", userCreated);
+
       return res.status(200).send("User susseful created");
     } else {
       return res
@@ -44,9 +44,7 @@ router.post("/auth/singup", async (req, res) => {
 router.post("/auth/singin", async (req, res) => {
 
   const { email, password } = req.body.formInputs;
-  console.log("Form inputs", email, password);
   const getUserByMail = await User.findOne({ where: { email: email } });
-  console.log("user by mail", getUserByMail);
   const userByMail = getUserByMail.dataValues;
   if (
     userByMail.email == email &&

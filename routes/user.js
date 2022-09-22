@@ -94,7 +94,7 @@ router.get("/user/me/history", verifyJWT, async (req, res) => {
 });
 
 router.get("/user/me/favorites", verifyJWT, async (req, res) => {
-  console.log("singup req", req.body);
+
 
   let pageSize = 20;
 

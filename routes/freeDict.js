@@ -18,7 +18,7 @@ const addWordToWordList = async (word, wordId) => {
   });
 
   if (created) {
-    // console.log("Insert word -> ", row);
+
     return {
       status: 200,
       message: "successful add in history",
@@ -56,18 +56,11 @@ router.get("/free-dict/fill-db", async (req, res) => {
       axios
         .get(getFreeDictWordUrl(ga[i]))
         .then(async function (response) {
-          //console.log("Response here", response);
           totalWordFound++;
-          console.log("Word founded", totalWordFound);
-          console.log("Words not founded", totalWordNotFound);
 
         })
         .catch(function (error) {
-
           totalWordNotFound++;
-          console.log("Word founded", totalWordFound);
-          console.log("Words not founded", totalWordNotFound);
-
           console.log(error);
 
         });

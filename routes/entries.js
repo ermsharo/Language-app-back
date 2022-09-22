@@ -99,7 +99,6 @@ const addWordToHistory = async (wordId, word, userId) => {
   });
 
   if (created) {
-    // console.log("Insert word -> ", row);
     return {
       status: 200,
       message: "successful add in history",
@@ -133,15 +132,10 @@ router.get("/entries/en/:word", verifyJWT, async (req, res) => {
   }
 
 
-  console.log(" \n \n \n word by name->", getWordIdByWordName);
-  console.log("User id", req.userId);
-
   const wordId = getWordIdByWordName.dataValues.id;
   axios
     .get(freeDictWordUrl)
     .then(async function (response) {
-      console.log("Response here", response);
-
 
       const insertionWordInHistory = await addWordToHistory(
         wordId,
@@ -188,7 +182,6 @@ const addWordToFavorites = async (wordId, word, userId) => {
   });
 
   if (created) {
-    console.log("Insert word -> ", row);
     return {
       status: 200,
       message: "successful add in favorites",

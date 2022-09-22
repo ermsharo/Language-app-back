@@ -1,4 +1,4 @@
-console.log("Pegandos nossos dados")
+// console.log("Pegandos nossos dados")
 const async = require("async");
 var fs = require('fs');
 
@@ -14,7 +14,7 @@ fs.readFile('english.txt', function (err, data) {
     const database = require('./db');
     const Produto = require('./produto');
     let i  = 0;
-    console.log(`${i}/${array.length} - ${array[i]}`) 
+    // console.log(`${i}/${array.length} - ${array[i]}`) 
     i++; 
     try {
       
