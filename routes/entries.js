@@ -70,7 +70,7 @@ router.get("/entries/en/", verifyJWT, async (req, res) => {
   });
 
 
-  let favoritedWords = await getFavoritesByUserId(1);
+  let favoritedWords = await getFavoritesByUserId(req.userId);
 
   res.send({
     results: rows.map((item) => {
