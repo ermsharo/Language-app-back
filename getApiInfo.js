@@ -14,7 +14,6 @@ fs.readFile('english.txt', function (err, data) {
     const database = require('./db');
     const Produto = require('./produto');
     let i  = 0;
-    // console.log(`${i}/${array.length} - ${array[i]}`) 
     i++; 
     try {
       

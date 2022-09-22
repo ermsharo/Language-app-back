@@ -47,6 +47,7 @@ const getNumberOfPages = (count, pageSize) => {
 };
 
 const getFavoritesByUserId = async (userId) => {
+  console.log("User id here", userId);
   const { rows } = await FavoritesLog.findAndCountAll({
     where: {
       user_id: userId,
@@ -58,16 +59,21 @@ const getFavoritesByUserId = async (userId) => {
     return value.word;
   });
 
+
   return favoritedWords;
 };
 const verifyIsFavorited = (favoritedWords, word) => {
+  console.log("Favorites words", favoritedWords, word);
+  if (verifyIsFavorited === null) return false;
   return favoritedWords.includes(word);
 };
+
 
 router.get("/user/me/history", verifyJWT, async (req, res) => {
   let pageSize = 20;
   let { page } = req.query;
 
+  console.log("Chamada de erro aqui");
   const { count, rows } = await HistoryLog.findAndCountAll({
     where: {
       user_id: req.userId,
@@ -76,7 +82,18 @@ router.get("/user/me/history", verifyJWT, async (req, res) => {
     limit: pageSize,
   });
 
-  let favoritedWords = await getFavoritesByUserId(1);
+  let favoritedWords = await getFavoritesByUserId(req.userId);
+
+  if (rows === null) {
+    return res.send({
+      results: [],
+      totalDocs: 0,
+      page: page,
+      totalPages: 0,
+      hasNext: false,
+      hasPrev: false,
+    });
+  }
 
   return res.send({
     results: rows.map((item) => {
@@ -100,6 +117,8 @@ router.get("/user/me/favorites", verifyJWT, async (req, res) => {
 
   let { page } = req.query;
 
+
+
   const { count, rows } = await FavoritesLog.findAndCountAll({
     where: {
       user_id: req.userId,
@@ -107,6 +126,17 @@ router.get("/user/me/favorites", verifyJWT, async (req, res) => {
     offset: page * pageSize,
     limit: pageSize,
   });
+
+  if (rows === null) {
+    return res.send({
+      results: [],
+      totalDocs: 0,
+      page: page,
+      totalPages: 0,
+      hasNext: false,
+      hasPrev: false,
+    });
+  }
 
   return res.send({
     results: rows.map((item) => {

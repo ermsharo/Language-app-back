@@ -47,6 +47,7 @@ const getFavoritesByUserId = async (userId) => {
 };
 
 const verifyIsFavorited = (favoritedWords, word) => {
+  if(favoritedWords === null) return false;
   return favoritedWords.includes(word);
 };
 
@@ -58,6 +59,7 @@ router.get("/entries/en/", verifyJWT, async (req, res) => {
   //Without req query
   let { search, page } = req.query;
   //Paginate all results and return
+
 
   const { count, rows } = await freeDict.findAndCountAll({
     where: {
